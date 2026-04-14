@@ -1,0 +1,5 @@
+Flask==2.2.5
+Flask-Cors==3.0.10
+Flask-SQLAlchemy==3.0.3
+Flask-WTF==1.2.1
+gunicorn==21.2.0
