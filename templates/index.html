@@ -1,510 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>POPO - Punch Out of Poverty Organization</title>
-
-
-
-<!-- Tailwind -->
-<script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-
-<!-- AOS Animations -->
-<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-
-<!-- Font Awesome CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-<style>
-  body { font-family: 'Inter', sans-serif; }
-  h1,h2,h3 { font-family: 'Poppins', sans-serif; }
-
-  .overlay::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    border-radius: 0px;
-  }
-
-  .card-hover:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
-  }
-
-  .btn-gradient {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .btn-gradient:hover {
-    transform: scale(1.07);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-  }
-
-  /* Mobile Menu */
-  #mobile-menu {
-    transform: scale(0.95);
-    opacity: 0;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-  #mobile-menu.show {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  .counter { font-size: 2.5rem; font-weight: 700; }
-</style>
-</head>
-
-<body class="bg-[#F9FBFD] text-gray-800">
-
-<!-- NAVBAR -->
-<header class="fixed w-full bg-white shadow z-50">
-  <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-    
-    <!-- Logo + Brand -->
-   <a href="/" class="flex items-center space-x-3">
   
-  <!-- Logo Image -->
-  <img src="{{ url_for('static', filename='images/logo.png') }}" 
-     alt="POPO Logo" 
-     class="h-10 w-10 md:h-14 md:w-14 rounded-full shadow-md border-2 border-blue-600">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POPO - Punch Out of Poverty Organization</title>
 
-  <!-- Text Block -->
-  <div class="flex flex-col leading-tight">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+
+    /* Precision Spacing for Fixed Nav */
+    section { scroll-margin-top: 85px; }
+
+    .card-hover:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    /* Modern Nav Hover Effect */
+    .nav-link { position: relative; transition: color 0.3s; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: #2563eb;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Mobile Menu Mask */
+    #mobile-menu {
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+    #mobile-menu.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .counter { font-size: 2.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  </style>
+  <script>
+  setTimeout(() => {
+    const msg = document.getElementById("flashMessage");
+    if (msg) {
+      msg.style.transition = "all 0.5s ease";
+      msg.style.opacity = "0";
+      msg.style.transform = "translateY(-10px)";
+      setTimeout(() => msg.remove(), 500);
+    }
+  }, 4000);
+</script>
+</div>
+</head>
+<body class="bg-[#FDFDFE] text-slate-800">
+  {% if success_message %}
+        {% if 'successfully' in success_message %}
+            <div id="flashMessage" class="fixed top-24 left-1/2 -translate-x-1/2 z-[2000] bg-green-600 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce">
+                <i class="fas fa-check-circle text-xl"></i>
+                <span class="font-bold">{{ success_message }}</span>
+            </div>
+        {% elif 'Thank you' in success_message %}
+            <div id="flashMessage" class="fixed top-24 left-1/2 -translate-x-1/2 z-[2000] bg-blue-600 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce">
+                <i class="fas fa-heart text-xl text-red-300"></i>
+                <span class="font-bold">{{ success_message }}</span>
+            </div>
+        {% else %}
+            <div id="flashMessage" class="fixed top-24 left-1/2 -translate-x-1/2 z-[2000] bg-red-600 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
+                <i class="fas fa-exclamation-triangle text-xl"></i>
+                <span class="font-bold">{{ success_message }}</span>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const msg = document.getElementById("flashMessage");
+                if (msg) {
+                    msg.style.transition = "all 0.8s ease";
+                    msg.style.opacity = "0";
+                    msg.style.transform = "translate(-50%, -20px)"; 
+                    setTimeout(() => msg.remove(), 800);
+                }
+            }, 5000);
+        });
+    </script>
+<header class="fixed w-full bg-white/95 backdrop-blur-md shadow-sm z-[100]">
+  <div class="max-w-7xl mx-auto flex justify-between items-center p-4 md:px-8">
     
-    <!-- POPO -->
-    <span class="font-extrabold text-transparent text-3xl md:text-4xl tracking-wide 
-                 bg-clip-text bg-gradient-to-r from-blue-700 to-teal-400">
-      POPO
-    </span>
+    <a href="#" onclick="scrollToTop()" class="flex items-center space-x-3 group">
+      <img src="static/images/logo.png" alt="POPO Logo" 
+           class="h-10 w-10 md:h-12 md:w-12 rounded-full shadow-md border-2 border-blue-600 transition-transform group-hover:rotate-12">
+      <div class="flex flex-col leading-tight">
+        <span class="font-extrabold text-2xl md:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-teal-500">POPO</span>
+        <span class="text-[9px] font-bold text-gray-500 tracking-[0.2em] uppercase">Punch Out of Poverty</span>
+      </div>
+    </a>
 
-    <!-- Tagline -->
-    <span class="text-[10px] md:text-xs font-medium text-gray-500 tracking-[0.2em] uppercase">
-      Punch Out of Poverty
-    </span>
-
-  </div>
-
-</a>
-    <!-- Navigation -->
-    <nav class="hidden md:flex gap-6 text-gray-700 font-medium">
-      <a href="#about" class="hover:text-blue-600 transition-colors duration-300">About</a>
-      <a href="#programs" class="hover:text-blue-600 transition-colors duration-300">Programs</a>
-      <a href="#impact" class="hover:text-blue-600 transition-colors duration-300">Impact</a>
-      <a href="#contact" class="hover:text-blue-600 transition-colors duration-300">Contact</a>
+    <nav class="hidden lg:flex items-center gap-10 text-xs font-bold uppercase tracking-widest">
+      <a href="#about" class="nav-link text-slate-600 hover:text-blue-700">About</a>
+      <a href="#programs" class="nav-link text-slate-600 hover:text-blue-700">Programs</a>
+      <a href="#impact" class="nav-link text-slate-600 hover:text-blue-700">Impact</a>
+      <a href="#contact" class="nav-link text-slate-600 hover:text-blue-700">Contact</a>
     </nav>
 
-    <!-- Donate Button -->
-    <button onclick="donate()" class="bg-gradient-to-r from-orange-400 to-orange-600 text-white px-5 py-2 rounded-lg btn-gradient shadow-md hover:scale-105 transition-transform duration-300">
-      Donate
-    </button>
-
-    <!-- Mobile Hamburger -->
-    <div class="md:hidden flex items-center">
-      <button id="mobile-menu-btn" class="text-gray-700 focus:outline-none" onclick="toggleMenu()">
-        <i class="fas fa-bars text-2xl"></i>
+    <div class="flex items-center gap-4">
+      <button onclick="donate()" class="bg-blue-600 hover:bg-blue-700 text-white px-7 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest shadow-lg shadow-blue-100 transition-all active:scale-95">
+        Donate
+      </button>
+      <button id="mobile-menu-btn" class="lg:hidden text-slate-800 text-2xl" onclick="toggleMenu()">
+        <i class="fas fa-bars-staggered"></i>
       </button>
     </div>
   </div>
 
-  <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white shadow-md flex flex-col p-6 gap-4">
-    <a href="#about" class="text-gray-700 font-medium hover:text-blue-600 transition-colors">About</a>
-    <a href="#programs" class="text-gray-700 font-medium hover:text-blue-600 transition-colors">Programs</a>
-    <a href="#impact" class="text-gray-700 font-medium hover:text-blue-600 transition-colors">Impact</a>
-    <a href="#contact" class="text-gray-700 font-medium hover:text-blue-600 transition-colors">Contact</a>
-    <button onclick="donate()" class="bg-gradient-to-r from-orange-400 to-orange-600 text-white px-5 py-2 rounded-lg btn-gradient shadow-md mt-2">
-      Donate
-    </button>
+  <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white shadow-2xl flex flex-col p-8 gap-6 border-t border-slate-50 lg:hidden">
+    <a href="#about" class="text-slate-800 font-black text-xl tracking-tight" onclick="toggleMenu()">About</a>
+    <a href="#programs" class="text-slate-800 font-black text-xl tracking-tight" onclick="toggleMenu()">Programs</a>
+    <a href="#impact" class="text-slate-800 font-black text-xl tracking-tight" onclick="toggleMenu()">Impact</a>
+    <a href="#contact" class="text-slate-800 font-black text-xl tracking-tight" onclick="toggleMenu()">Contact</a>
   </div>
 </header>
 
-<!-- HERO -->
-<section class="relative pt-32 pb-24 px-6" style="background: url('/static/images/hero.avif') center/cover no-repeat;">
-  <div class="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30"></div>
-  <div class="max-w-4xl mx-auto flex flex-col gap-6 sm:gap-10">    <div data-aos="fade-right">
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">         Changing Lives in <span class="text-yellow-400">Kenya</span>.<br> Inspiring Youth. Growing Communities.
+<section class="relative min-h-[85vh] flex items-center pt-32 pb-20 px-6 overflow-hidden" style="background: url('static/images/hero.avif') center/cover no-repeat fixed;">
+  <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
+  <div class="relative z-10 max-w-7xl mx-auto w-full">
+    <div data-aos="fade-up">
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-black text-white leading-[1.1] mb-8">
+        Changing Lives in <br><span class="text-yellow-400">Kenya</span>.
       </h1>
-      <p class="text-white mb-6 text-lg md:text-xl">
-        POPO helps Kenyan kids and teens learn, play, and build a brighter future.
+      <p class="text-gray-200 text-lg md:text-2xl max-w-2xl mb-10 leading-relaxed font-medium">
+        Empowering the next generation in Nairobi through mentorship, education, and sports.
       </p>
-        <div class="flex flex-col sm:flex-row gap-4">        <button onclick="donate()" class="bg-gradient-to-r from-orange-400 to-orange-600 text-white px-6 py-3 rounded-lg btn-gradient shadow-lg hover:scale-105 transition-all">
+      <div class="flex flex-col sm:flex-row gap-5">
+        <button onclick="donate()" class="bg-orange-500 hover:bg-orange-600 text-white px-10 py-5 rounded-2xl font-black text-lg shadow-2xl transition-all hover:scale-105">
           Donate Now
         </button>
-        <a href="#about" class="bg-white text-blue-600 px-6 py-3 rounded-lg shadow-lg hover:scale-105 transition-all">
-          Learn More
+        <a href="#about" class="bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-5 rounded-2xl font-black text-center hover:bg-white hover:text-blue-900 transition-all">
+          Our Story
         </a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ABOUT -->
-<section id="about" class="py-20 px-6 bg-white">
-  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-    <div data-aos="fade-right">
-      <img src="/static/images/about.avif" alt="Kenyan youth empowerment" class="rounded-xl shadow-lg">
+<section id="about" class="py-24 md:py-32 px-6 bg-white">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+    <div data-aos="fade-right" class="relative">
+      <img src="static/images/about.avif" alt="Kenya Impact" class="rounded-[2.5rem] shadow-2xl w-full object-cover">
+      <div class="absolute -bottom-6 -right-6 bg-blue-600 text-white p-8 rounded-3xl hidden md:block">
+        <p class="text-4xl font-black">10+</p>
+        <p class="text-xs font-bold uppercase tracking-widest opacity-80">Years of Service</p>
+      </div>
     </div>
     <div data-aos="fade-left">
-      <h2 class="text-3xl font-bold mb-4">About POPO</h2>
-      <p class="mb-4 text-gray-700">POPO (Punch Out of Poverty Organization) is dedicated to transforming the lives of Kenyan youth and communities. We provide mentorship, skills training, education support, and community projects that empower individuals to break the cycle of poverty.</p>
-      <p class="text-gray-700">With deep roots in local communities, POPO ensures that our initiatives are culturally relevant, inclusive, and sustainable, creating real impact for a brighter Kenya.</p>
+      <span class="text-blue-600 font-black uppercase tracking-[0.3em] text-xs mb-4 block">Our Purpose</span>
+      <h2 class="text-4xl md:text-5xl font-black mb-8 text-slate-900 leading-tight">Empowering Youth Beyond Poverty</h2>
+      <div class="space-y-6 text-slate-600 leading-relaxed text-lg">
+        <p>Punch Out of Poverty Organization (POPO) is committed to transforming lives in Kenya. We believe that with the right mentorship and resources, every child can break the cycle of poverty.</p>
+        <p>Our programs are community-driven, ensuring sustainable change in the heart of local neighborhoods like Ng'ando, Nairobi.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- PROGRAMS -->
-<section id="programs" class="py-20 px-6 bg-gray-50">
-  <h2 class="text-3xl font-bold text-center mb-12">Our Programs</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">    <!-- Mentorship -->
-    <div class="bg-white p-6 rounded-xl shadow card-hover text-center" data-aos="zoom-in">
-      <img src="/static/images/mentorship.avif" alt="Mentorship Program" class="mx-auto mb-3 h-20 w-20 object-cover rounded-full shadow">
-      <h3 class="font-bold text-xl mb-2">Mentorship</h3>
-      <p class="text-gray-600 text-sm">Guiding Kenyan youth through personal, academic, and professional growth programs.</p>
+<section id="programs" class="py-24 px-6 bg-slate-50">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-black mb-4">Our Programs</h2>
+      <div class="w-24 h-2 bg-blue-600 mx-auto rounded-full"></div>
     </div>
-    <!-- Skills Training -->
-    <div class="bg-white p-6 rounded-xl shadow card-hover text-center" data-aos="zoom-in" data-aos-delay="100">
-      <img src="/static/images/skills.jpg" alt="Skills Training Program" class="mx-auto mb-3 h-20 w-20 object-cover rounded-full shadow">
-      <h3 class="font-bold text-xl mb-2">Skills Training</h3>
-      <p class="text-gray-600 text-sm">Hands-on workshops equipping youth with employable and entrepreneurial skills.</p>
-    </div>
-    <!-- Education -->
-    <div class="bg-white p-6 rounded-xl shadow card-hover text-center" data-aos="zoom-in" data-aos-delay="200">
-      <img src="/static/images/education.avif" alt="Education Program" class="mx-auto mb-3 h-20 w-20 object-cover rounded-full shadow">
-      <h3 class="font-bold text-xl mb-2">Education</h3>
-      <p class="text-gray-600 text-sm">Supporting formal schooling, scholarships, and informal learning to empower youth in Kenya.</p>
-    </div>
-    <!-- Community -->
-    <div class="bg-white p-6 rounded-xl shadow card-hover text-center" data-aos="zoom-in" data-aos-delay="300">
-      <img src="/static/images/community.jpg" alt="Community Program" class="mx-auto mb-3 h-20 w-20 object-cover rounded-full shadow">
-      <h3 class="font-bold text-xl mb-2">Community</h3>
-      <p class="text-gray-600 text-sm">Strengthening communities through inclusive projects that foster resilience and solidarity.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="bg-white p-10 rounded-[2.5rem] shadow-sm card-hover text-center" data-aos="zoom-in">
+        <img src="static/images/mentorship.avif" alt="Mentorship" class="mx-auto mb-6 h-24 w-24 object-cover rounded-3xl shadow-lg">
+        <h3 class="font-black text-xl mb-3 text-slate-900">Mentorship</h3>
+        <p class="text-slate-500 text-sm">Personal guidance and leadership skills.</p>
+      </div>
+      <div class="bg-white p-10 rounded-[2.5rem] shadow-sm card-hover text-center" data-aos="zoom-in" data-aos-delay="100">
+        <img src="static/images/skills.jpg" alt="Skills" class="mx-auto mb-6 h-24 w-24 object-cover rounded-3xl shadow-lg">
+        <h3 class="font-black text-xl mb-3 text-slate-900">Skills Training</h3>
+        <p class="text-slate-500 text-sm">Practical workshops for self-reliance.</p>
+      </div>
+      <div class="bg-white p-10 rounded-[2.5rem] shadow-sm card-hover text-center" data-aos="zoom-in" data-aos-delay="200">
+        <img src="static/images/education.avif" alt="Education" class="mx-auto mb-6 h-24 w-24 object-cover rounded-3xl shadow-lg">
+        <h3 class="font-black text-xl mb-3 text-slate-900">Education</h3>
+        <p class="text-slate-500 text-sm">Academic support and scholarships.</p>
+      </div>
+      <div class="bg-white p-10 rounded-[2.5rem] shadow-sm card-hover text-center" data-aos="zoom-in" data-aos-delay="300">
+        <img src="static/images/community.jpg" alt="Community" class="mx-auto mb-6 h-24 w-24 object-cover rounded-3xl shadow-lg">
+        <h3 class="font-black text-xl mb-3 text-slate-900">Community</h3>
+        <p class="text-slate-500 text-sm">Local resilience and health projects.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- IMPACT --> 
- <section id="impact" class="py-20 px-6 text-center bg-white"> 
-  <h2 class="text-3xl font-bold mb-12">Our Impact in Kenya</h2> 
-  <div class="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto"> 
-    <div class="bg-gray-50 p-6 rounded-xl shadow card-hover" data-aos="fade-up"> 
-      <h3 class="counter text-blue-600">65+</h3> 
-      <p class="text-gray-700 mt-2">Youth Benefited</p>
-     </div> 
-     <div class="bg-gray-50 p-6 rounded-xl shadow card-hover" data-aos="fade-up" data-aos-delay="100"> 
-      <h3 class="counter text-blue-600">500+</h3> 
-      <p class="text-gray-700 mt-2">Kenyan Families Reached</p>
-     </div> 
-     <div class="bg-gray-50 p-6 rounded-xl shadow card-hover" data-aos="fade-up" data-aos-delay="200"> 
-      <h3 class="counter text-blue-600">15</h3>
-       <p class="text-gray-700 mt-2">Local Enterprises Supported</p>
-     </div> 
-      <div class="bg-gray-50 p-6 rounded-xl shadow card-hover" data-aos="fade-up" data-aos-delay="300"> 
-        <h3 class="counter text-blue-600">12</h3>
-         <p class="text-gray-700 mt-2">Communities Empowered</p>
+<section id="impact" class="py-24 px-6 text-center bg-blue-700 text-white"> 
+  <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12"> 
+    <div data-aos="fade-up"> 
+      <h3 class="counter" data-target="65">0</h3> 
+      <p class="text-blue-100 font-bold uppercase tracking-widest text-[10px] mt-2">Youth Benefited</p>
+    </div> 
+    <div data-aos="fade-up" data-aos-delay="100"> 
+      <h3 class="counter" data-target="500">0</h3> 
+      <p class="text-blue-100 font-bold uppercase tracking-widest text-[10px] mt-2">Families Reached</p>
+    </div> 
+    <div data-aos="fade-up" data-aos-delay="200"> 
+      <h3 class="counter" data-target="15">0</h3> 
+      <p class="text-blue-100 font-bold uppercase tracking-widest text-[10px] mt-2">Enterprises</p>
+    </div> 
+    <div data-aos="fade-up" data-aos-delay="300"> 
+      <h3 class="counter" data-target="12">0</h3> 
+      <p class="text-blue-100 font-bold uppercase tracking-widest text-[10px] mt-2">Communities</p>
     </div>
   </div>
- </section> 
-         
+</section> 
 
-<section id="contact" class="py-24 px-6 bg-gray-50">
+<section id="contact" class="py-24 px-6 bg-slate-50">
+  <div class="max-w-4xl mx-auto space-y-16">
+    
+    <div data-aos="fade-up" class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
+      <div class="mb-10 text-center md:text-left">
+        <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-4">Send us a Message</h2>
+        <p class="text-slate-500">Have a question or want to get involved? Send us a message below.</p>
+      </div>
 
-  <div class="max-w-4xl mx-auto flex flex-col gap-10">
-
-    <!-- GET INVOLVED (PRIMARY) -->
-    <div data-aos="fade-up" class="bg-white p-8 rounded-2xl shadow-xl">
-
-      <h2 class="text-3xl md:text-4xl font-bold text-blue-700 mb-4">
-        Get Involved
-      </h2>
-
-      <p class="text-gray-700 mb-6">
-        Have questions or ideas? Join us in making a difference across Kenya.
-      </p>
-
-      <form id="contactForm"
-        action="/contact"
-        method="POST"
-        class="flex flex-col gap-5">
-
-        <input class="p-4 border rounded-lg" name="name" placeholder="Your Name" required>
-        <input class="p-4 border rounded-lg" name="email" placeholder="Your Email" required>
-        <textarea class="p-4 border rounded-lg h-32" name="message" placeholder="Your Message" required></textarea>
-
-        <button type="submit"
-          class="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
-          Send Message
-        </button>
-
+      <form id="contactForm" action="/contact" method="POST" class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-6">
+          <input class="w-full p-5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-lg transition-all" name="name" placeholder="Full Name" required>
+          <input class="w-full p-5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-lg transition-all" name="email" type="email" placeholder="Email Address" required>
+        </div>
+        <div class="flex">
+          <textarea class="w-full p-5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-lg transition-all resize-none h-full min-h-[160px]" name="message" placeholder="How can we help?" required></textarea>
+        </div>
+        <div class="md:col-span-2">
+          <button type="submit" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-xl hover:bg-blue-700 hover:shadow-2xl transition-all active:scale-95">
+            Send Message
+          </button>
+        </div>
       </form>
     </div>
 
-
-    <!-- SUPPORT (SECONDARY - BELOW) -->
-    <div data-aos="fade-up" class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-orange-500">
-
-      <h3 class="text-2xl font-bold text-gray-800 mb-2">
-        Support Our Mission
-      </h3>
-
-      <p class="text-gray-600 text-sm mb-6">
-        If you prefer to support us directly, you can make a donation here.
-      </p>
-
-      <div class="flex justify-center">
-        <button onclick="donate()"
-          class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition">
-          Make a Donation
-        </button>
+    <div data-aos="fade-up" class="relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 p-8 md:p-14 rounded-[2.5rem] shadow-2xl text-white">
+      <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+      
+      <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
+        <div class="max-w-xl text-center md:text-left">
+          <h2 class="text-3xl md:text-4xl font-black mb-6">Support Our Mission</h2>
+          <p class="text-slate-300 text-lg leading-relaxed mb-4">
+            Join us in making a real difference across Kenya. Your donation provides education, sports gear, and mentorship to children in need.
+          </p>
+        </div>
+        
+        <div class="flex-shrink-0">
+          <button onclick="donate()" class="bg-orange-500 hover:bg-orange-600 text-white px-10 py-5 rounded-2xl font-black text-xl shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-4">
+            <span>Make a Donation</span>
+            <i class="fas fa-heart text-red-200 animate-pulse"></i>
+          </button>
+        </div>
       </div>
-
     </div>
 
   </div>
 </section>
 
-<section class="bg-gray-900 text-white pt-16 pb-8">
-  <div class="max-w-6xl mx-auto px-6 mb-16 text-center" data-aos="fade-up">
-  <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">    <div class="footer-card p-6 rounded-2xl bg-gray-800/40 border border-gray-700/50 shadow-inner transition transform hover:-translate-y-1" data-aos="fade-up">
-      <h3 class="text-xl font-bold mb-6 text-blue-400 border-b border-gray-700 pb-2 inline-block">POPO Organization</h3>
-      <div class="space-y-4 text-gray-300">
-        <p class="flex items-start gap-3">
-          <i class="fas fa-map-marker-alt mt-1 text-blue-400"></i>
-          <span>Ng’ando, Nairobi, Kenya</span>
-        </p>
-        <p class="flex items-start gap-3">
-          <i class="fas fa-envelope mt-1 text-blue-400"></i>
-          <a href="mailto:punchingoutofpoverty168@gmail.com" class="hover:text-blue-500 transition-colors break-all">
-            punchingoutofpoverty168@gmail.com
-          </a>
-        </p>
-        <p class="flex items-start gap-3">
-          <i class="fas fa-phone-alt mt-1 text-blue-400"></i>
-          <span>+254 725 667 517 <br> +254 722 463 898</span>
-        </p>
-      </div>
-    </div>
-
-    <div class="footer-card p-6 rounded-2xl bg-gray-800/40 border border-gray-700/50 shadow-inner transition transform hover:-translate-y-1" data-aos="fade-up" data-aos-delay="100">
-      <h3 class="text-xl font-bold mb-6 text-blue-400 border-b border-gray-700 pb-2 inline-block">Navigation</h3>
-      <ul class="text-gray-300 space-y-4">
-        <li>
-          <a href="#about" class="hover:text-blue-400 transition-all duration-300 block transform hover:translate-x-2">About Us</a>
-        </li>
-        <li>
-          <a href="#programs" class="hover:text-blue-400 transition-all duration-300 block transform hover:translate-x-2">Programs</a>
-        </li>
-        <li>
-          <a href="#impact" class="hover:text-blue-400 transition-all duration-300 block transform hover:translate-x-2">Impact</a>
-        </li>
-        <li>
-          <a href="#contact" class="hover:text-blue-400 transition-all duration-300 block transform hover:translate-x-2">Get Involved</a>
-        </li>
+<footer class="bg-slate-950 text-white pt-24 pb-12 px-6">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 mb-20">
+    <div>
+      <h3 class="text-2xl font-black text-blue-500 mb-6">POPO Organization</h3>
+      <ul class="space-y-4 text-slate-400 font-medium">
+        <li class="flex items-start gap-3"><i class="fas fa-map-marker-alt mt-1 text-blue-500"></i> Ng’ando, Nairobi, Kenya</li>
+        <li class="flex items-start gap-3"><i class="fas fa-envelope mt-1 text-blue-500"></i> <span class="break-all">punchingoutofpoverty168@gmail.com</span></li>
       </ul>
     </div>
-
-    <div class="footer-card p-6 rounded-2xl bg-gray-800/40 border border-gray-700/50 shadow-inner transition transform hover:-translate-y-1" data-aos="fade-up" data-aos-delay="200">
-      <h3 class="text-xl font-bold mb-4 text-blue-400">Support Us</h3>
-      <p class="text-gray-400 text-sm mb-6">Join our community online and help us transform more lives.</p>
-      
-      <div class="flex gap-4 mb-8">
+    <div>
+      <h3 class="text-xs font-black uppercase tracking-[0.3em] text-blue-500 mb-8">Navigation</h3>
+      <ul class="space-y-4 text-slate-400 font-bold uppercase tracking-widest text-[11px]">
+        <li><a href="#about" class="hover:text-white transition">About Us</a></li>
+        <li><a href="#programs" class="hover:text-white transition">Our Programs</a></li>
+        <li><a href="#impact" class="hover:text-white transition">Impact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-xs font-black uppercase tracking-[0.3em] text-blue-500 mb-8">Social Presence</h3>
+     <div class="flex gap-4 mb-8">
         <a href="https://www.facebook.com/share/1bR5iDajhx/?mibextid=wwXIfr" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-all transform hover:-translate-y-1"><i class="fab fa-facebook-f"></i></a>
         <a href="https://x.com/dorothyanyang20?s=21" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-400 transition-all transform hover:-translate-y-1"><i class="fab fa-twitter"></i></a>
         <a href=" https://www.instagram.com/punching.popo?igsh=bThyZjBqbWszbHgz&utm_source=qr" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-pink-600 transition-all transform hover:-translate-y-1"><i class="fab fa-instagram"></i></a>
         <a href="https://www.linkedin.com/company/punch-out-of-poverty-organization/" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-green-600 transition-all transform hover:-translate-y-1"><i class="fab fa-linkedin-in"></i></a>
       </div>
-      <div class="mt-6 text-center">
-        <p class="text-gray-400 text-sm mb-3">
-          Want to make a difference today?
-        </p>
-
-        <a href="#contact"
-          class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition">
-          Support Us Above
-        </a>
-      </div>
     </div>
   </div>
-
-  <div class="mt-20 border-t border-gray-800 pt-10">
-    <div class="container mx-auto px-6 text-center">
-      <p class="text-gray-500 text-sm font-medium">
-        &copy; 2026 <span class="text-gray-300">Punch Out of Poverty Organization</span>
-      </p>
-      <p class="mt-3 text-[10px] uppercase tracking-[0.3em] text-gray-600">
-        Ng'ando, Nairobi, Kenya
-      </p>
-    </div>
+  <div class="pt-12 border-t border-slate-900 text-center">
+    <p class="text-slate-600 text-[10px] font-black uppercase tracking-[0.5em]">&copy; 2026 Punch Out of Poverty Organization</p>
   </div>
-</section>
+</footer>
 
-<div id="donationModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[999]">
-<div class="bg-white w-[90%] max-w-md rounded-2xl p-5 sm:p-6 shadow-xl relative">
-    <button onclick="closeDonate()" class="absolute top-3 right-4 text-gray-500 text-xl">
-      ✕
+<div id="donationModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
+  <div class="bg-white w-full max-w-md rounded-[3rem] p-10 shadow-2xl relative" data-aos="zoom-in">
+    <button onclick="closeDonate()" class="absolute top-8 right-8 text-slate-400 hover:text-slate-900 text-2xl">✕</button>
+    <h2 class="text-3xl font-black mb-2 text-slate-900">Support POPO ❤️</h2>
+    <p class="text-slate-500 mb-10 text-lg leading-tight">Every donation directly impacts a child in Kenya.</p>
+    
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <button onclick="selectAmount(10, this)" class="amount-btn py-5 bg-slate-50 rounded-2xl font-black text-xl hover:bg-blue-50 transition-all border-2 border-transparent">$10</button>
+      <button onclick="selectAmount(25, this)" class="amount-btn py-5 bg-slate-50 rounded-2xl font-black text-xl hover:bg-blue-50 transition-all border-2 border-transparent">$25</button>
+      <button onclick="selectAmount(50, this)" class="amount-btn py-5 bg-slate-50 rounded-2xl font-black text-xl hover:bg-blue-50 transition-all border-2 border-transparent">$50</button>
+      <button onclick="selectAmount(100, this)" class="amount-btn py-5 bg-slate-50 rounded-2xl font-black text-xl hover:bg-blue-50 transition-all border-2 border-transparent">$100</button>
+    </div>
+    
+    <input id="customAmount" type="number" class="w-full p-6 bg-slate-50 rounded-2xl mb-8 outline-none focus:ring-4 focus:ring-blue-100 text-2xl font-black" placeholder="Other $">
+    
+    <button onclick="payNow()" class="w-full bg-orange-500 text-white py-6 rounded-2xl font-black text-2xl shadow-xl hover:bg-orange-600 transition-all active:scale-95">
+      Confirm & Pay
     </button>
-
-      <h2 class="text-2xl font-bold mb-2">Support POPO ❤️</h2>
-      <p class="text-gray-600 text-sm mb-6">Choose an amount to continue</p>
-
-      <div class="grid grid-cols-2 gap-3">
-        <button onclick="selectAmount(10, this)" class="amount-btn bg-gray-100 py-3 rounded-lg hover:bg-gray-200">$10</button>
-        <button onclick="selectAmount(25, this)" class="amount-btn bg-gray-100 py-3 rounded-lg hover:bg-gray-200">$25</button>
-        <button onclick="selectAmount(50, this)" class="amount-btn bg-gray-100 py-3 rounded-lg hover:bg-gray-200">$50</button>
-        <button onclick="selectAmount(100, this)" class="amount-btn bg-gray-100 py-3 rounded-lg hover:bg-gray-200">$100</button>
-      </div>
-
-      <input id="customAmount"
-        type="number"
-        class="w-full border p-3 rounded-lg mt-4 text-base"
-        placeholder="Custom amount">
-
-      <!--  THIS is your PAY NOW button -->
-      <button onclick="payNow()" 
-        class="w-full mt-5 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold">
-        Pay Now
-      </button>
-
   </div>
 </div>
 
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
-    let selectedAmount = 0;
+  AOS.init({ duration: 1000, once: true });
 
-    // open modal
-    function donate() {
-      document.getElementById('donationModal').classList.remove('hidden');
-    }
+  // Mobile Menu Logic
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden');
+    setTimeout(() => menu.classList.toggle('show'), 10);
+  }
 
-    // close modal
-    function closeDonate() {
-      document.getElementById('donationModal').classList.add('hidden');
-    }
-
-    // preset buttons
-    function selectAmount(amount, el) {
-      selectedAmount = Number(amount);
-
-      // clear custom input completely
-      const customInput = document.getElementById("customAmount");
-      customInput.value = "";
-      customInput.blur();
-
-      // highlight selected button
-      document.querySelectorAll(".amount-btn").forEach(btn => {
-        btn.classList.remove("bg-blue-500", "text-white");
-      });
-
-      el.classList.add("bg-blue-500", "text-white");
-    }
-    document.getElementById("customAmount").addEventListener("input", function () {
-      if (this.value.length > 0) {
-        selectedAmount = 0;
-
-        document.querySelectorAll(".amount-btn").forEach(btn => {
-          btn.classList.remove("bg-blue-500", "text-white");
-        });
-      }
-    });
-    function payNow() {
-
-      const customInput = document.getElementById("customAmount").value.trim();
-
-      let amount = null;
-
-      // PRIORITY 1: Custom input ALWAYS wins if valid
-      if (customInput !== "" && !isNaN(customInput)) {
-        amount = Number(customInput);
-      } 
-      // PRIORITY 2: Selected button
-      else if (selectedAmount > 0) {
-        amount = selectedAmount;
-      }
-
-      if (!amount || amount <= 0) {
-        alert("Please select or enter a valid amount");
-        return;
-      }
-
-      fetch("/create-donation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.payment_url) {
-          window.location.href = data.payment_url;
-        } else {
-          alert(data.error || "Payment failed");
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Server error. Try again.");
-      });
-    }
-      // Smooth scroll to top
-      function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-</script>
-
-<script>
-AOS.init({ duration: 1200 });
-
-
-
-// COUNTER ANIMATION
-document.addEventListener('DOMContentLoaded', () => {
-  const counters = document.querySelectorAll('.counter');
-  counters.forEach(counter => {
-    const updateCount = () => {
-      const target = +counter.innerText.replace('+','');
-      const speed = 50;
+  // Counter Logic
+  const animateCounters = () => {
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(c => {
+      const target = +c.dataset.target;
+      const increment = target / 60;
       let current = 0;
-      const increment = target / speed;
-      const animate = () => {
+      const update = () => {
         current += increment;
-        if(current < target){
-          counter.innerText = Math.ceil(current) + (counter.innerText.includes('+') ? '+' : '');
-          requestAnimationFrame(animate);
+        if(current < target) {
+          c.innerText = Math.ceil(current) + '+';
+          requestAnimationFrame(update);
         } else {
-          counter.innerText = target + (counter.innerText.includes('+') ? '+' : '');
+          c.innerText = target + '+';
         }
       };
-      animate();
-    };
-    updateCount();
-  });
-});
+      update();
+    });
+  };
 
+  const observer = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) animateCounters();
+  }, { threshold: 0.5 });
+  observer.observe(document.getElementById('impact'));
 
-// MOBILE MENU
-function toggleMenu() {
-  const menu = document.getElementById('mobile-menu');
-  if(menu.classList.contains('show')){
-    menu.classList.remove('show');
-    setTimeout(() => menu.classList.add('hidden'), 300);
-  } else {
-    menu.classList.remove('hidden');
-    setTimeout(() => menu.classList.add('show'), 50);
+  // Donation Logic
+  let selectedAmount = 0;
+  function donate() { document.getElementById('donationModal').classList.remove('hidden'); }
+  function closeDonate() { document.getElementById('donationModal').classList.add('hidden'); }
+
+  function selectAmount(amount, el) {
+    selectedAmount = amount;
+    document.getElementById("customAmount").value = "";
+    document.querySelectorAll(".amount-btn").forEach(btn => {
+      btn.classList.remove("bg-blue-600", "text-white", "border-blue-600");
+    });
+    el.classList.add("bg-blue-600", "text-white");
   }
-}
-document.querySelectorAll('#mobile-menu a').forEach(link => {
-  link.addEventListener('click', toggleMenu);
-});
+
+  function payNow() {
+    const custom = document.getElementById("customAmount").value;
+    const finalAmount = custom ? custom : selectedAmount;
+    if (!finalAmount || finalAmount <= 0) return alert("Please select or enter an amount");
+    
+    fetch("/create-donation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: finalAmount })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.payment_url) window.location.href = data.payment_url;
+      else alert("Payment logic failed. Please check server connection.");
+    });
+  }
+
+  function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 </script>
- <style>
-      /* Footer card hover effect */
-      .footer-card {
-        background-color: #1f2937; /* dark gray background for columns */
-      }
-    </style>
+   <script>
+  setTimeout(() => {
+    const msg = document.getElementById("flashMessage");
+    if (msg) {
+      msg.style.transition = "all 0.5s ease";
+      msg.style.opacity = "0";
+      msg.style.transform = "translateY(-10px)";
+      setTimeout(() => msg.remove(), 500);
+    }
+  }, 4000);
+</script>
 </body>
 </html>
