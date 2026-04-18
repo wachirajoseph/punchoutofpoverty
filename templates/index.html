@@ -59,6 +59,7 @@
   .counter { font-size: 2.5rem; font-weight: 700; }
 </style>
 </head>
+
 <body class="bg-[#F9FBFD] text-gray-800">
 
 <!-- NAVBAR -->
@@ -70,8 +71,8 @@
   
   <!-- Logo Image -->
   <img src="{{ url_for('static', filename='images/logo.png') }}" 
-       alt="POPO Logo" 
-       class="h-16 w-16 rounded-full shadow-md border-2 border-blue-600">
+     alt="POPO Logo" 
+     class="h-10 w-10 md:h-14 md:w-14 rounded-full shadow-md border-2 border-blue-600">
 
   <!-- Text Block -->
   <div class="flex flex-col leading-tight">
@@ -126,16 +127,13 @@
 <!-- HERO -->
 <section class="relative pt-32 pb-24 px-6" style="background: url('/static/images/hero.avif') center/cover no-repeat;">
   <div class="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30"></div>
-  <div class="max-w-6xl mx-auto relative z-10 grid md:grid-cols-2 gap-10 items-center">
-    <div data-aos="fade-right">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-         Changing Lives in <span class="text-yellow-400">Kenya</span>.<br> Inspiring Youth. Growing Communities.
+  <div class="max-w-4xl mx-auto flex flex-col gap-6 sm:gap-10">    <div data-aos="fade-right">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">         Changing Lives in <span class="text-yellow-400">Kenya</span>.<br> Inspiring Youth. Growing Communities.
       </h1>
       <p class="text-white mb-6 text-lg md:text-xl">
         POPO helps Kenyan kids and teens learn, play, and build a brighter future.
       </p>
-      <div class="flex gap-4">
-        <button onclick="donate()" class="bg-gradient-to-r from-orange-400 to-orange-600 text-white px-6 py-3 rounded-lg btn-gradient shadow-lg hover:scale-105 transition-all">
+        <div class="flex flex-col sm:flex-row gap-4">        <button onclick="donate()" class="bg-gradient-to-r from-orange-400 to-orange-600 text-white px-6 py-3 rounded-lg btn-gradient shadow-lg hover:scale-105 transition-all">
           Donate Now
         </button>
         <a href="#about" class="bg-white text-blue-600 px-6 py-3 rounded-lg shadow-lg hover:scale-105 transition-all">
@@ -163,8 +161,7 @@
 <!-- PROGRAMS -->
 <section id="programs" class="py-20 px-6 bg-gray-50">
   <h2 class="text-3xl font-bold text-center mb-12">Our Programs</h2>
-  <div class="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
-    <!-- Mentorship -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">    <!-- Mentorship -->
     <div class="bg-white p-6 rounded-xl shadow card-hover text-center" data-aos="zoom-in">
       <img src="/static/images/mentorship.avif" alt="Mentorship Program" class="mx-auto mb-3 h-20 w-20 object-cover rounded-full shadow">
       <h3 class="font-bold text-xl mb-2">Mentorship</h3>
@@ -273,8 +270,7 @@
 
 <section class="bg-gray-900 text-white pt-16 pb-8">
   <div class="max-w-6xl mx-auto px-6 mb-16 text-center" data-aos="fade-up">
-  <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
-    <div class="footer-card p-6 rounded-2xl bg-gray-800/40 border border-gray-700/50 shadow-inner transition transform hover:-translate-y-1" data-aos="fade-up">
+  <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">    <div class="footer-card p-6 rounded-2xl bg-gray-800/40 border border-gray-700/50 shadow-inner transition transform hover:-translate-y-1" data-aos="fade-up">
       <h3 class="text-xl font-bold mb-6 text-blue-400 border-b border-gray-700 pb-2 inline-block">POPO Organization</h3>
       <div class="space-y-4 text-gray-300">
         <p class="flex items-start gap-3">
@@ -348,8 +344,7 @@
 </section>
 
 <div id="donationModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[999]">
-  <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl relative">
-
+<div class="bg-white w-[90%] max-w-md rounded-2xl p-5 sm:p-6 shadow-xl relative">
     <button onclick="closeDonate()" class="absolute top-3 right-4 text-gray-500 text-xl">
       ✕
     </button>
@@ -365,9 +360,9 @@
       </div>
 
       <input id="customAmount"
-          type="number"
-          class="w-full border p-3 rounded-lg mt-4"
-          placeholder="Custom amount">
+        type="number"
+        class="w-full border p-3 rounded-lg mt-4 text-base"
+        placeholder="Custom amount">
 
       <!--  THIS is your PAY NOW button -->
       <button onclick="payNow()" 
