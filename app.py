@@ -1,75 +1,86 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, session, redirect
+import os
+import uuid
 import requests
-import base64
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", "CHANGE_THIS_IN_PRODUCTION")
 
-# HOME ROUTE
+FLUTTERWAVE_SECRET_KEY = os.getenv("FLW_SECRET_KEY", "")
+FLUTTERWAVE_PUBLIC_KEY = os.getenv("FLW_PUBLIC_KEY", "")
+
+# 💰 Allowed donation amounts (IMPORTANT SECURITY FIX)
+ALLOWED_AMOUNTS = [10, 25, 50, 100, 200, 500]
+
+
 @app.route('/')
 def home():
     return render_template('index.html')
 
 
-# CONTACT FORM
-@app.route('/contact', methods=['POST'])
-def contact():
-    name = request.form.get('name')
-    email = request.form.get('email')
-    message = request.form.get('message')
-
-    print(f"New Message from {name} ({email}): {message}")
-
-    return jsonify({"status": "success"})
-
-
-# MPESA STK PUSH
-@app.route('/mpesa/stkpush', methods=['POST'])
-def stk_push():
+# ----------------------------
+# CREATE DONATION (SECURE)
+# ----------------------------
+@app.route('/create-donation', methods=['POST'])
+def create_donation():
     data = request.get_json()
-    phone = data.get('phone')
-    amount = data.get('amount')
 
-    # 🔐 YOUR CREDENTIALS (replace)
-    consumer_key = "YOUR_KEY"
-    consumer_secret = "YOUR_SECRET"
-    shortcode = "174379"
-    passkey = "YOUR_PASSKEY"
+    amount = data.get("amount")
 
-    # STEP 1: ACCESS TOKEN
-    url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-    response = requests.get(url, auth=(consumer_key, consumer_secret))
-    access_token = response.json()['access_token']
+    # 1. Validate amount strictly
+    if amount not in ALLOWED_AMOUNTS:
+        return jsonify({"error": "Invalid donation amount"}), 400
 
-    # STEP 2: GENERATE PASSWORD
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    password = base64.b64encode((shortcode + passkey + timestamp).encode()).decode('utf-8')
+    tx_ref = str(uuid.uuid4())
 
-    # STEP 3: STK PUSH
-    stk_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+    # Store transaction server-side (important for verification later)
+    session["tx_ref"] = tx_ref
+    session["amount"] = amount
+
+    payment_url = (
+        "https://checkout.flutterwave.com/v3/hosted/pay"
+        f"?public_key={FLUTTERWAVE_PUBLIC_KEY}"
+        f"&tx_ref={tx_ref}"
+        f"&amount={amount}"
+        f"&currency=USD"
+        f"&redirect_url=http://127.0.0.1:5000/verify-payment"
+    )
+
+    return jsonify({"payment_url": payment_url})
+
+
+# ----------------------------
+# PAYMENT VERIFICATION (IMPORTANT)
+# ----------------------------
+@app.route('/verify-payment')
+def verify_payment():
+    tx_ref = session.get("tx_ref")
+
+    if not tx_ref:
+        return "Invalid session", 400
 
     headers = {
-        "Authorization": f"Bearer {access_token}"
+        "Authorization": f"Bearer {FLUTTERWAVE_SECRET_KEY}"
     }
 
-    payload = {
-        "BusinessShortCode": shortcode,
-        "Password": password,
-        "Timestamp": timestamp,
-        "TransactionType": "CustomerPayBillOnline",
-        "Amount": amount,
-        "PartyA": phone,
-        "PartyB": shortcode,
-        "PhoneNumber": phone,
-        "CallBackURL": "https://yourdomain.com/callback",
-        "AccountReference": "POPO",
-        "TransactionDesc": "Donation"
-    }
+    url = f"https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref={tx_ref}"
 
-    res = requests.post(stk_url, json=payload, headers=headers)
+    response = requests.get(url, headers=headers)
+    result = response.json()
 
-    return jsonify(res.json())
+    if result.get("status") == "success":
+        status = result["data"]["status"]
+
+        if status == "successful":
+            return "🎉 Payment verified successfully. Thank you for supporting POPO!"
+        else:
+            return "❌ Payment not completed"
+
+    return "Verification failed", 400
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
